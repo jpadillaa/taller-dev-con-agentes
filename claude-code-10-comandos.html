@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code · 10 comandos esenciales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDF1F4;
+    --paper-2:#F6F8F9;
+    --ink:#15212B;
+    --ink-soft:#4A5A66;
+    --ink-faint:#8295A1;
+    --grid:#CBD6DE;
+    --signal:#C85C3C;
+    --signal-soft:#E9C7BC;
+    --display:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:
+      linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 28px,
+      var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(28px,6vw,72px) clamp(20px,5vw,56px);
+  }
+
+  .wrap{max-width:760px;margin:0 auto}
+
+  /* ---- Header ---- */
+  header{
+    border-bottom:1.5px solid var(--ink);
+    padding-bottom:22px;
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:18px;
+  }
+  .eyebrow .slash{color:var(--signal);font-weight:700}
+  h1{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(28px,6vw,42px);
+    line-height:1.06;
+    letter-spacing:-.015em;
+  }
+  h1 em{font-style:normal;color:var(--signal)}
+  .sub{
+    margin-top:14px;
+    max-width:48ch;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+
+  /* ---- Phase label ---- */
+  .phase{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin:34px 0 4px;
+    padding-left:46px;
+  }
+  .phase .pnum{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    color:var(--signal);
+    font-weight:700;
+  }
+  .phase .pname{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:13px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .phase::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--grid);
+    transform:translateY(-3px);
+  }
+
+  /* ---- Command rows ---- */
+  ol{list-style:none}
+  .cmd{
+    position:relative;
+    display:grid;
+    grid-template-columns:46px 1fr;
+    gap:18px;
+    padding:18px 0 18px 0;
+    border-bottom:1px solid var(--grid);
+  }
+  /* connecting thread */
+  .cmd::before{
+    content:"";
+    position:absolute;
+    left:13px;
+    top:0;
+    bottom:0;
+    width:1.5px;
+    background:var(--grid);
+  }
+  .cmd:first-of-type::before{top:28px}
+  .cmd:last-of-type::before{bottom:auto;height:28px}
+
+  .num{
+    position:relative;
+    z-index:1;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-faint);
+    background:var(--paper);
+    width:28px;height:28px;
+    border:1.5px solid var(--ink);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .body .token{
+    font-family:var(--mono);
+    font-size:clamp(16px,3.4vw,19px);
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:-.01em;
+  }
+  .body .token .sl{color:var(--signal)}
+  .body .token .dollar{color:var(--ink-faint);font-weight:500;margin-right:2px}
+  .title{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .desc{
+    margin-top:9px;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    max-width:58ch;
+  }
+  .when{
+    margin-top:9px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-faint);
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .when .arrow{color:var(--signal);font-weight:700;flex-shrink:0}
+
+  /* ---- Footer ---- */
+  footer{
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1.5px solid var(--ink);
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-faint);
+    line-height:1.7;
+  }
+  footer b{color:var(--ink-soft);font-weight:500}
+
+  /* ---- Motion ---- */
+  .cmd,.phase{opacity:0;transform:translateY(8px);animation:rise .5s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media (prefers-reduced-motion:reduce){
+    .cmd,.phase{opacity:1;transform:none;animation:none}
+  }
+  @media (max-width:480px){
+    .phase{padding-left:0}
+    .cmd{grid-template-columns:34px 1fr;gap:12px}
+    .cmd::before{left:16px}
+    .num{width:24px;height:24px;font-size:11px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow"><span class="slash">/</span> claude code · guía de bolsillo</div>
+    <h1>Doce comandos para <em>empezar bien</em></h1>
+    <p class="sub">Ordenados según el momento en que un desarrollador los encuentra, desde abrir la terminal por primera vez hasta el cierre de una sesión productiva.</p>
+  </header>
+
+  <!-- FASE 1 · ACCESO -->
+  <div class="phase" style="animation-delay:.05s"><span class="pnum">FASE 01</span><span class="pname">Acceso</span></div>
+  <ol>
+    <li class="cmd" style="animation-delay:.08s">
+      <span class="num">01</span>
+      <div class="body">
+        <span class="token"><span class="dollar">$</span>claude</span>
+        <div class="title">Abrir la herramienta</div>
+        <p class="desc">Se escribe en la terminal del sistema, dentro de la carpeta del proyecto, para iniciar la sesión interactiva de Claude Code. Es el único comando que no empieza por barra.</p>
+        <p class="when"><span class="arrow">→</span> Cada vez que se comienza a trabajar.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.11s">
+      <span class="num">02</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>login</span>
+        <div class="title">Autenticarse</div>
+        <p class="desc">Conecta la sesión con tu cuenta de Anthropic. Aparece en el primer arranque y sirve después para cambiar de cuenta cuando hace falta.</p>
+        <p class="when"><span class="arrow">→</span> En el primer uso, o al alternar entre cuentas.</p>
+      </div>
+    </li>
+  </ol>
+
+  <!-- FASE 2 · ARRANQUE -->
+  <div class="phase" style="animation-delay:.14s"><span class="pnum">FASE 02</span><span class="pname">Arranque</span></div>
+  <ol>
+    <li class="cmd" style="animation-delay:.17s">
+      <span class="num">03</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>help</span>
+        <div class="title">Descubrir el terreno</div>
+        <p class="desc">Lista todos los comandos disponibles con una breve descripción. Es lo primero que se escribe cuando aún no se sabe qué existe.</p>
+        <p class="when"><span class="arrow">→</span> El día cero, antes de pedir cualquier cosa.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.20s">
+      <span class="num">04</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>init</span>
+        <div class="title">Dar memoria al proyecto</div>
+        <p class="desc">Analiza el repositorio y genera el archivo CLAUDE.md, de modo que Claude entienda la estructura y las convenciones del código desde el inicio.</p>
+        <p class="when"><span class="arrow">→</span> Al abrir un proyecto por primera vez.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.23s">
+      <span class="num">05</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>permissions</span>
+        <div class="title">Definir límites de confianza</div>
+        <p class="desc">Establece qué herramientas y acciones puede ejecutar Claude sin pedir confirmación. Aquí se decide cuánta autonomía concederle.</p>
+        <p class="when"><span class="arrow">→</span> Antes de dejarlo trabajar sin supervisión constante.</p>
+      </div>
+    </li>
+  </ol>
+
+  <!-- FASE 3 · TRABAJO -->
+  <div class="phase" style="animation-delay:.26s"><span class="pnum">FASE 03</span><span class="pname">Trabajo</span></div>
+  <ol>
+    <li class="cmd" style="animation-delay:.29s">
+      <span class="num">06</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>model</span>
+        <div class="title">Elegir la herramienta correcta</div>
+        <p class="desc">Cambia el modelo según la tarea, reservando los más potentes para los problemas complejos y los ligeros para el trabajo rutinario.</p>
+        <p class="when"><span class="arrow">→</span> Cuando el costo o la dificultad de la tarea lo justifica.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.32s">
+      <span class="num">07</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>plan</span>
+        <div class="title">Pensar antes de tocar</div>
+        <p class="desc">Activa el modo de planificación para que Claude proponga una estrategia antes de modificar archivos, lo que evita errores costosos en cambios grandes.</p>
+        <p class="when"><span class="arrow">→</span> Frente a una refactorización o una funcionalidad amplia.</p>
+      </div>
+    </li>
+  </ol>
+
+  <!-- FASE 4 · SESIÓN -->
+  <div class="phase" style="animation-delay:.35s"><span class="pnum">FASE 04</span><span class="pname">Sesión</span></div>
+  <ol>
+    <li class="cmd" style="animation-delay:.38s">
+      <span class="num">08</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>context</span>
+        <div class="title">Medir cuánto cabe</div>
+        <p class="desc">Muestra qué porción de la ventana de contexto está ocupada. Sirve para anticipar el momento en que la sesión empieza a saturarse.</p>
+        <p class="when"><span class="arrow">→</span> Cuando las respuestas comienzan a perder precisión.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.41s">
+      <span class="num">09</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>compact</span>
+        <div class="title">Comprimir sin perder el hilo</div>
+        <p class="desc">Resume el historial conservando lo esencial y libera espacio de contexto. Permite sostener una sesión larga sin reiniciarla.</p>
+        <p class="when"><span class="arrow">→</span> En tareas extensas, cada cierto tiempo de trabajo activo.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.44s">
+      <span class="num">10</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>clear</span>
+        <div class="title">Empezar de cero</div>
+        <p class="desc">Reinicia la conversación a un contexto vacío para abordar una tarea nueva sin arrastrar el ruido de la anterior.</p>
+        <p class="when"><span class="arrow">→</span> Al cambiar por completo de objetivo.</p>
+      </div>
+    </li>
+  </ol>
+
+  <!-- FASE 5 · CALIDAD Y CIERRE -->
+  <div class="phase" style="animation-delay:.47s"><span class="pnum">FASE 05</span><span class="pname">Calidad y cierre</span></div>
+  <ol>
+    <li class="cmd" style="animation-delay:.50s">
+      <span class="num">11</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>review</span>
+        <div class="title">Control de calidad</div>
+        <p class="desc">Solicita una revisión estructurada de los cambios, en busca de errores, riesgos de seguridad y problemas de mantenibilidad antes de integrar.</p>
+        <p class="when"><span class="arrow">→</span> Justo antes de confirmar o abrir un pull request.</p>
+      </div>
+    </li>
+    <li class="cmd" style="animation-delay:.53s">
+      <span class="num">12</span>
+      <div class="body">
+        <span class="token"><span class="sl">/</span>cost</span>
+        <div class="title">Cerrar las cuentas</div>
+        <p class="desc">Muestra el consumo de tokens y el costo de la sesión. En las versiones recientes funciona como alias de <span style="font-family:var(--mono)">/usage</span>.</p>
+        <p class="when"><span class="arrow">→</span> Para entender el gasto y ajustar el flujo de trabajo.</p>
+      </div>
+    </li>
+  </ol>
+
+  <footer>
+    <b>Nota.</b> La disponibilidad y el nombre de cada comando varían según la versión, el plan y la plataforma. Escribe <span style="color:var(--signal)">/</span> en la terminal de Claude Code para ver los de tu instalación.<br>
+    Fuente · documentación oficial de Claude Code, docs.claude.com
+  </footer>
+
+</div>
+</body>
+</html>
